@@ -1,24 +1,14 @@
 #pragma once
 #include <cinttypes>
 
+#include "Window/Window.h"
+#include "Events/EventDispatcher.h"
+
+#include <memory>
+
 namespace FTMGui {
 
 	enum class Platform { None = 0, Windows, Mac };
-
-	struct FTMWindow;
-
-	struct FTMGuiGlobals
-	{
-		FTMWindow* mainWindow;
-
-		bool windowClosed = false;
-		uint32_t viewportWidth = 0;
-		uint32_t viewportHeight = 0;
-
-		const char* currentTitle = "";
-	};
-
-	extern FTMGuiGlobals* s_FTMGuiGlobals;
 
 	struct AppDescriptor
 	{
@@ -27,25 +17,29 @@ namespace FTMGui {
 		uint32_t windowWidth = 0;
 		uint32_t windowHeight = 0;
 
-		const char* appName = "App";
+		std::string_view appName = "App";
 	};
 
-	void Init(const AppDescriptor& App);
+	#define ContextType std::shared_ptr<FTMGuiContext>
 
-	/*
-	* For testing purposes, will be used to simulate client
-	*/
-	void Run();
+	class FTMGuiContext
+	{
+	public:
+		FTMGuiContext() = default;
+		FTMGuiContext(Platform platform, const WindowInfo& info);
 
-	/*
-	* Swaps buffers and re renderes every frame
-	*/
+		~FTMGuiContext();
 
-	void Update();
+		static ContextType CreateContext(Platform platform, const WindowInfo& info);
 
-	/*
-	* Cleans up memory
-	*/
-	void Shutdown();
+		void UpdateCtx();
+
+		inline const bool IsRunning() const { return !m_MainWindow.WindowClosed(); }
+
+	private:
+		Window   m_MainWindow;
+		Platform m_Platform;
+		EventDispatcher m_EventDispatcher;
+	};
 
 }

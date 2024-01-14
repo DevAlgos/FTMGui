@@ -1,50 +1,26 @@
 #include "FTMGui.h"
 
-#include <memory>
-
-#include "MainWindow/MainWindow.h"
-
 
 namespace FTMGui {
 
-	FTMGuiGlobals* s_FTMGuiGlobals = nullptr;
-
-	void Init(const AppDescriptor& App)
+	FTMGuiContext::FTMGuiContext(Platform platform, const WindowInfo& info)
+		: m_MainWindow(info), m_Platform(platform)
 	{
-		if (!s_FTMGuiGlobals)
-		{
-			s_FTMGuiGlobals = (FTMGuiGlobals*)malloc(sizeof(FTMGuiGlobals));
-			
-
-			if (!s_FTMGuiGlobals) 
-				__debugbreak();
-
-			s_FTMGuiGlobals->windowClosed = false;
-
-			s_FTMGuiGlobals->currentTitle = App.appName;
-			s_FTMGuiGlobals->viewportWidth = App.windowWidth;
-			s_FTMGuiGlobals->viewportHeight = App.windowHeight;
-
-			s_FTMGuiGlobals->mainWindow = CreateMainWindow();
-		}
 	}
-	void Run()
+
+	FTMGuiContext::~FTMGuiContext()
 	{
-		while (!s_FTMGuiGlobals->windowClosed)
-		{
-			Update();
-		}
+		glfwTerminate();
 	}
-	void Update()
+
+	ContextType FTMGuiContext::CreateContext(Platform platform, const WindowInfo& info)
 	{
-		UpdateWindow(s_FTMGuiGlobals->mainWindow);
+		return std::make_shared<FTMGuiContext>(platform, info);
 	}
-	void Shutdown()
+
+	void FTMGuiContext::UpdateCtx()
 	{
-		if (s_FTMGuiGlobals)
-		{
-			DestroyWindow(s_FTMGuiGlobals->mainWindow);
-			free(s_FTMGuiGlobals);
-		}
+		m_MainWindow.Update();
 	}
+
 }

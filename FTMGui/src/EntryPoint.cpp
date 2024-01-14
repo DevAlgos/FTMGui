@@ -2,17 +2,27 @@
 
 #include "FTMGui.h"
 
+using namespace FTMGui;
+
 int main()
-{
+{	
 	FTMGui::AppDescriptor Desc;
 	Desc.appName = "app";
 	Desc.platform = FTMGui::Platform::Windows;
 	Desc.windowWidth = 600;
 	Desc.windowHeight = 600;
 
-	FTMGui::Init(Desc);
+	WindowInfo info;
+	info.width = 1920;
+	info.height = 1080;
+	info.title = "wassup";
+	info.vSync = false;
+	info.windowClose = false;
 
-	FTMGui::Run();
+	ContextType ctx = FTMGuiContext::CreateContext(Platform::Windows, info);
 
-	FTMGui::Shutdown();
+	while (ctx->IsRunning())
+	{
+		ctx->UpdateCtx();
+	}
 }
