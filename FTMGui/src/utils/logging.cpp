@@ -32,13 +32,10 @@ namespace FTMGui {
         auto it = m_LogLevelMap.find(level);
 
         if (it != m_LogLevelMap.end())
-        {
             return prefix + it->second;
-        }
         else
-        {
             return prefix + "log." + std::to_string(level);
-        }
+        
     }
 
     std::string Logger::Format(int level)

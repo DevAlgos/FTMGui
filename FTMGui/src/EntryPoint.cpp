@@ -2,7 +2,7 @@
 
 #include "FTMGui.h"
 
-#include "Utils/Logging.h"
+#include "Utils/Log.h"
 
 using namespace FTMGui;
 
@@ -28,6 +28,9 @@ int main()
 		ctx->UpdateCtx();
 	}*/
 
-	FTMGui::Logger logger;
-	logger.Debug("message", 5, " hello", " nice one");
+	FTMGui::Log::Init();
+	bool condition = true;
+	FTMGUI_ASSERT(condition, "hello");
+
+	FTMGUI_LOG_DEBUG("msg ", 500, " no but you", " yes");
 }
