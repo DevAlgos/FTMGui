@@ -10,6 +10,7 @@
     <ClCompile Include="FTMGui\src\Window\Window.cpp" />
     <ClCompile Include="FTMGui\src\Events\EventDispatcher.cpp" />
     <ClCompile Include="FTMGui\src\Layers\LayerStack.cpp" />
+    <ClCompile Include="FTMGui\src\Utils\Logging.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -22,6 +23,7 @@
     <ClInclude Include="FTMGui\src\Window\Window.h" />
     <ClInclude Include="FTMGui\src\Events\EventListener.h" />
     <ClInclude Include="FTMGui\src\Events\EventDispatcher.h" />
-    <ClInclude Include="FTMGui\src\Layers\LayerStach.h" />
+    <ClInclude Include="FTMGui\src\Layers\LayerStack.h" />
+    <ClInclude Include="FTMGui\src\Utils\Logging.h" />
   </ItemGroup>
 </Project>

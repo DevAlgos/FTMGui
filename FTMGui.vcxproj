@@ -264,6 +264,7 @@
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\FTMGui.cpp" />
     <ClCompile Include="FTMGui\src\Events\EventDispatcher.cpp" />
     <ClCompile Include="FTMGui\src\Layers\LayerStack.cpp" />
+    <ClCompile Include="FTMGui\src\Utils\Logging.cpp" />
     <ClCompile Include="FTMGui\src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -277,7 +278,8 @@
     <ClInclude Include="FTMGui\src\Events\EventDispatcher.h" />
     <ClInclude Include="FTMGui\src\Events\EventListener.h" />
     <ClInclude Include="FTMGui\src\Layers\Layer.h" />
-    <ClInclude Include="FTMGui\src\Layers\LayerStach.h" />
+    <ClInclude Include="FTMGui\src\Layers\LayerStack.h" />
+    <ClInclude Include="FTMGui\src\Utils\Logging.h" />
     <ClInclude Include="FTMGui\src\Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

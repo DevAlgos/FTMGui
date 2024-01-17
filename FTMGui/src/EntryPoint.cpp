@@ -2,11 +2,13 @@
 
 #include "FTMGui.h"
 
+#include "Utils/Logging.h"
+
 using namespace FTMGui;
 
 int main()
 {	
-	FTMGui::AppDescriptor Desc;
+	/*FTMGui::AppDescriptor Desc;
 	Desc.appName = "app";
 	Desc.platform = FTMGui::Platform::Windows;
 	Desc.windowWidth = 600;
@@ -24,5 +26,8 @@ int main()
 	while (ctx->IsRunning())
 	{
 		ctx->UpdateCtx();
-	}
+	}*/
+
+	FTMGui::Logger logger;
+	logger.Debug("message", 5, " hello", " nice one");
 }
