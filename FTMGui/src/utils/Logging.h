@@ -60,7 +60,7 @@ namespace FTMGui {
 		std::string m_Name = "";
 	};
 	template<class ...Args>
-	inline void Logger::Log(int level, Args && ...args)
+	inline void Logger::Log(int level, Args&& ...args)
 	{
 		std::cout << Format(level);
 		(std::cout << ... << std::forward<Args>(args));

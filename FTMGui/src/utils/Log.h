@@ -31,8 +31,8 @@ namespace FTMGui {
 #endif
 
 #ifdef _DEBUG
-	#define FTMGUI_ASSERT(condition, ...) if(!condition) {FTMGUI_LOG_FATAL(__VA_ARGS__); FTMGUI_BREAK();}
+	#define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__); FTMGUI_BREAK();}
 #else
-	#define FTMGUI_ASSERT(condition, ...) if(!condition) {FTMGUI_LOG_FATAL(__VA_ARGS__);}
+	#define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__);}
 
 #endif

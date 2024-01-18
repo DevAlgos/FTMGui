@@ -8,7 +8,7 @@ add_executable(
     FTMGui 
     ${CMAKE_SOURCE_DIR}/FTMGui/src/EntryPoint.cpp
     ${CMAKE_SOURCE_DIR}/FTMGui/src/FTMGui.cpp
-    ${CMAKE_SOURCE_DIR}/FTMGui/src/MainWindow/MainWindow.cpp
+    ${CMAKE_SOURCE_DIR}/FTMGui/src/Window/Window.cpp
 
 )
 
