@@ -13,10 +13,7 @@ namespace FTMGui {
 		if (!glfwInit())
 			__debugbreak();
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 		m_Handle = glfwCreateWindow(m_WindowInfo.width, m_WindowInfo.height, m_WindowInfo.title.data(), nullptr, nullptr);
@@ -62,7 +59,6 @@ namespace FTMGui {
 				self->AddEvent(e);
 			});
 
-		glfwMakeContextCurrent(m_Handle);
 	}
 
 	Window::~Window()

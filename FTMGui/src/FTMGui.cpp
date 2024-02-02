@@ -1,21 +1,19 @@
 #include "FTMGui.h"
-
+#include "Utils/Log.h"
 
 namespace FTMGui {
 
 	FTMGuiContext::FTMGuiContext(Platform platform, const WindowInfo& info)
 		: m_MainWindow(info), m_Platform(platform)
 	{
+		Log::Init();
+		m_VkInstance		= MakeScope<VulkanInstance>("FTMGui Application");
+		m_VkPhysicalDevice	= MakeScope<VulkanPhysicalDevice>(GetScope(m_VkInstance));
 	}
 
 	FTMGuiContext::~FTMGuiContext()
 	{
 		glfwTerminate();
-	}
-
-	ContextType FTMGuiContext::CreateContext(Platform platform, const WindowInfo& info)
-	{
-		return std::make_shared<FTMGuiContext>(platform, info);
 	}
 
 	void FTMGuiContext::UpdateCtx()

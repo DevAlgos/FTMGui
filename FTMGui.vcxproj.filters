@@ -1,31 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="FTMGui\src\EntryPoint.cpp">
+    <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\EntryPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Events\EventDispatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\FTMGui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FTMGui\src\Window\Window.cpp" />
-    <ClCompile Include="FTMGui\src\Events\EventDispatcher.cpp" />
-    <ClCompile Include="FTMGui\src\Layers\LayerStack.cpp" />
-    <ClCompile Include="FTMGui\src\Utils\Logging.cpp" />
-    <ClCompile Include="FTMGui\src\Utils\Log.cpp" />
+    <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Layers\LayerStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Platform\Vulkan\VulkanInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Platform\Vulkan\VulkanPhysicalDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Utils\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Utils\Logging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Window\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{184FBE48-466D-3437-86BF-B222A8A71A88}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FTMGui\src\Layers\Layer.h" />
-    <ClInclude Include="FTMGui\src\Events\Event.h" />
-    <ClInclude Include="FTMGui\src\Window\Window.h" />
-    <ClInclude Include="FTMGui\src\Events\EventListener.h" />
-    <ClInclude Include="FTMGui\src\Events\EventDispatcher.h" />
-    <ClInclude Include="FTMGui\src\Layers\LayerStack.h" />
-    <ClInclude Include="FTMGui\src\Utils\Logging.h" />
-    <ClInclude Include="FTMGui\src\Utils\Log.h" />
   </ItemGroup>
 </Project>

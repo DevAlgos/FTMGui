@@ -15,6 +15,14 @@ CMakeFiles/
 FTMGui.dir/
 lib-int/
 CMakeCache.txt
+Debug/
+Release/
+
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -2,14 +2,17 @@
 
 #include "Logging.h"
 
+#include "Base.h"
+
 namespace FTMGui {
+
 	class Log
 	{
 	public:
 		static void Init();
-		inline static std::shared_ptr<Logger>& GetLogger() { return s_MainLogger; };
+		inline static Ref<Logger>& GetLogger() { return s_MainLogger; }
 	public:
-		static std::shared_ptr<Logger> s_MainLogger;
+		static Ref<Logger> s_MainLogger;
 	};
 
 
@@ -24,15 +27,15 @@ namespace FTMGui {
 
 
 #ifdef WIN32
-	#define FTMGUI_BREAK() __debugbreak()
+#define FTMGUI_BREAK() __debugbreak()
 #else
 //need to add for apple and linux etc..
-	#define FTMGUI_BREAK()
+#define FTMGUI_BREAK()
 #endif
 
 #ifdef _DEBUG
-	#define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__); FTMGUI_BREAK();}
+#define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__); FTMGUI_BREAK();}
 #else
-	#define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__);}
+#define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__);}
 
 #endif

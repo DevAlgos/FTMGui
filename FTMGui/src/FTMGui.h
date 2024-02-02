@@ -4,6 +4,8 @@
 #include "Window/Window.h"
 #include "Events/EventDispatcher.h"
 
+#include "Platform/Vulkan/VulkanPhysicalDevice.h"
+
 #include <memory>
 
 namespace FTMGui {
@@ -20,8 +22,6 @@ namespace FTMGui {
 		std::string_view appName = "App";
 	};
 
-	#define ContextType std::shared_ptr<FTMGuiContext>
-
 	class FTMGuiContext
 	{
 	public:
@@ -29,8 +29,6 @@ namespace FTMGui {
 		FTMGuiContext(Platform platform, const WindowInfo& info);
 
 		~FTMGuiContext();
-
-		static ContextType CreateContext(Platform platform, const WindowInfo& info);
 
 		void UpdateCtx();
 
@@ -40,6 +38,9 @@ namespace FTMGui {
 		Window   m_MainWindow;
 		Platform m_Platform;
 		EventDispatcher m_EventDispatcher;
+
+		Scope<VulkanInstance> m_VkInstance;
+		Scope<VulkanPhysicalDevice> m_VkPhysicalDevice;
 	};
 
 }

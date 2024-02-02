@@ -1,21 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
 
-#set(CMAKE_CXX_STANDARD 20) incase we want c++ instead of c
-
 project(FTMGui VERSION 1.0)
 
-add_executable(
-    FTMGui 
-    ${CMAKE_SOURCE_DIR}/FTMGui/src/EntryPoint.cpp
-    ${CMAKE_SOURCE_DIR}/FTMGui/src/FTMGui.cpp
-    ${CMAKE_SOURCE_DIR}/FTMGui/src/Window/Window.cpp
-
-)
+if(APPLE)
+   target_compile_definitions(FTMGui PRIVATE VK_MAC)
+endif()
 
 
-target_include_directories(FTMGui PRIVATE
-    ${CMAKE_SOURCE_DIR}/FTMGui/src
-)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/FTMGui/src/*.cpp)
+
+add_executable(FTMGui ${SOURCE_FILES})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -36,12 +33,18 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/ExternalLibs/glfw)
+find_package(Vulkan REQUIRED)
 
-target_link_libraries(FTMGui glfw)
+target_link_libraries(FTMGui PRIVATE
+    glfw
+    ${Vulkan_LIBRARIES}
+)
 
-#TODO: Check which os the library is being ran from
-find_package(OpenGL REQUIRED)
+target_include_directories(FTMGui PRIVATE
+    ${CMAKE_SOURCE_DIR}/FTMGui/src
+)
 
-target_link_libraries(FTMGui OpenGL::GL)
-
-target_include_directories(glfw PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(FTMGui PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${Vulkan_INCLUDE_DIRS}
+)

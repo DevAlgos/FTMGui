@@ -8,7 +8,7 @@ using namespace FTMGui;
 
 int main()
 {	
-	/*FTMGui::AppDescriptor Desc;
+	FTMGui::AppDescriptor Desc;
 	Desc.appName = "app";
 	Desc.platform = FTMGui::Platform::Windows;
 	Desc.windowWidth = 600;
@@ -21,16 +21,11 @@ int main()
 	info.vSync = false;
 	info.windowClose = false;
 
-	ContextType ctx = FTMGuiContext::CreateContext(Platform::Windows, info);
+	Ref<FTMGuiContext> ctx = MakeRef<FTMGuiContext>(Platform::Windows, info);
 
 	while (ctx->IsRunning())
 	{
 		ctx->UpdateCtx();
-	}*/
+	}
 
-	FTMGui::Log::Init();
-	bool condition = true;
-	FTMGUI_ASSERT(condition, "hello");
-
-	FTMGUI_LOG_DEBUG("msg ", 500, " no but you", " yes");
 }
