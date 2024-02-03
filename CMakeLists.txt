@@ -2,17 +2,16 @@ cmake_minimum_required(VERSION 3.10)
 
 project(FTMGui VERSION 1.0)
 
-if(APPLE)
-   target_compile_definitions(FTMGui PRIVATE VK_MAC)
-endif()
-
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/FTMGui/src/*.cpp)
 
 add_executable(FTMGui ${SOURCE_FILES})
+
+if(APPLE)
+   target_compile_definitions(FTMGui PRIVATE VK_MAC)
+endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
