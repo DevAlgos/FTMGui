@@ -269,12 +269,19 @@
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Utils\Log.cpp" />
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Utils\Logging.cpp" />
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Window\Window.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanDevice.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\ExternalLibs\glfw\src\glfw.vcxproj">
       <Project>{3CC5F3E4-8E3A-3E73-B949-B7D9A0607ABA}</Project>
       <Name>glfw</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanDevice.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSurface.h" />
+    <ClInclude Include="FTMGui\src\Window\GLFWBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

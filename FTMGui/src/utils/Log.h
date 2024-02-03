@@ -27,14 +27,14 @@ namespace FTMGui {
 
 
 #ifdef WIN32
-#define FTMGUI_BREAK() __debugbreak()
+#define FTMGUI_HALT() __debugbreak()
 #else
 //need to add for apple and linux etc..
-#define FTMGUI_BREAK()
+#define FTMGUI_HALT()
 #endif
 
 #ifdef _DEBUG
-#define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__); FTMGUI_BREAK();}
+#define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__); FTMGUI_HALT();}
 #else
 #define FTMGUI_ASSERT(condition, ...) if(!(condition)) {FTMGUI_LOG_FATAL(__VA_ARGS__);}
 

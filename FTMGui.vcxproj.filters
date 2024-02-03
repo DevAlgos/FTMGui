@@ -28,10 +28,17 @@
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Window\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanDevice.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{184FBE48-466D-3437-86BF-B222A8A71A88}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanDevice.h" />
+    <ClInclude Include="FTMGui\src\Window\GLFWBase.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSurface.h" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string_view>
+#include <set>
 
 #include <vulkan/vulkan.h>
 
@@ -78,7 +79,7 @@ namespace FTMGui {
 	constexpr auto vkCall(Fun fun, Args&&... args) ->
 		typename std::enable_if_t<!std::is_same_v<VkResult, decltype(fun(args...))>>
 	{
-        fun(std::forward<Args>(args)...);;
+        fun(std::forward<Args>(args)...);
 	} 
 
     #ifdef _DEBUG
@@ -94,4 +95,5 @@ namespace FTMGui {
         };
 
     #endif
+
 }

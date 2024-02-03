@@ -1,10 +1,11 @@
 #pragma once
 
 #include <cinttypes>
-#include <GLFW/glfw3.h>
 
 #include <string_view>
+
 #include "Events/EventDispatcher.h"
+#include "GLFWBase.h"
 
 
 namespace FTMGui {
@@ -53,7 +54,7 @@ namespace FTMGui {
 
 		void AddEventListener(const EventListener& listener);
 
-		inline const GLFWwindow*	  GetHandle()    const	 { return m_Handle; }
+		inline		 GLFWwindow*	  GetHandle()    const	 { return m_Handle; }
 		inline const std::string_view GetTitle()     const   { return m_WindowInfo.title; }
 		inline const uint32_t		  GetWidth()     const	 { return m_WindowInfo.width; }
 		inline const uint32_t		  GetHeight()    const	 { return m_WindowInfo.height; }

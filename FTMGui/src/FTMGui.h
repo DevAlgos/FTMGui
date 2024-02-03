@@ -4,7 +4,8 @@
 #include "Window/Window.h"
 #include "Events/EventDispatcher.h"
 
-#include "Platform/Vulkan/VulkanPhysicalDevice.h"
+#include "Platform/Vulkan/VulkanDevice.h"
+#include "Platform/Vulkan/VulkanSurface.h"
 
 #include <memory>
 
@@ -14,7 +15,7 @@ namespace FTMGui {
 
 	struct AppDescriptor
 	{
-		Platform platform = Platform::Windows; //by default
+		Platform platform = Platform::Windows; //going to make redundant
 
 		uint32_t windowWidth = 0;
 		uint32_t windowHeight = 0;
@@ -32,15 +33,18 @@ namespace FTMGui {
 
 		void UpdateCtx();
 
-		inline const bool IsRunning() const { return !m_MainWindow.WindowClosed(); }
+		inline const bool IsRunning() const { return !m_MainWindow->WindowClosed(); }
 
 	private:
-		Window   m_MainWindow;
-		Platform m_Platform;
-		EventDispatcher m_EventDispatcher;
+		Ref<VulkanInstance> m_VkInstance;
 
-		Scope<VulkanInstance> m_VkInstance;
+		Platform m_Platform;
+
+		Scope<Window>  m_MainWindow;
+		Scope<VulkanSurface> m_MainSurface;
+
 		Scope<VulkanPhysicalDevice> m_VkPhysicalDevice;
+		Scope<VulkanDevice> m_VkDevice;
 	};
 
 }

@@ -2,7 +2,7 @@
 
 namespace FTMGui {
 
-	VulkanPhysicalDevice::VulkanPhysicalDevice(const VulkanInstance& instance)
+	VulkanPhysicalDevice::VulkanPhysicalDevice(const VulkanInstance& instance, const VulkanSurface& surface)
 		: m_PhysicalDevice(nullptr)
 	{
 		uint32_t DeviceCount = 0;
@@ -15,9 +15,9 @@ namespace FTMGui {
 
 		for (auto Device : Devices)
 		{
-			DeviceProperties Properties = Query(Device);
+			DeviceProperties Properties = Query(Device, surface);
 
-			if (IsDeviceSuitable(Properties))
+			if (IsDeviceSuitable(Device, Properties))
 			{
 				FTMGUI_LOG_INFO("Device ", Properties.Properties.deviceName, " chosen");
 				m_PhysicalDevice = Device;
@@ -31,14 +31,37 @@ namespace FTMGui {
 	{
 	}
 
-	//TODO define a set of minimum features a device must have
-	bool VulkanPhysicalDevice::IsDeviceSuitable(const DeviceProperties& Properties)
+	bool VulkanPhysicalDevice::IsDeviceSuitable(const VkPhysicalDevice& device, const DeviceProperties& Properties)
 	{
 		return Properties.Properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
-			   Properties.Features.geometryShader && Properties.QueueFamily.IsValid();
+			   Properties.Features.geometryShader  && 
+			   Properties.QueueFamily.IsValid()    && 
+			  !Properties.SurfaceFormats.empty()   &&
+			  !Properties.PresentModes.empty()     &&
+			   ContainsRequiredExtensions(device);
 	}
 
-	DeviceProperties VulkanPhysicalDevice::Query(VkPhysicalDevice device)
+	bool VulkanPhysicalDevice::ContainsRequiredExtensions(const VkPhysicalDevice& device)
+	{
+		uint32_t ExtensionCount = 0;
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &ExtensionCount, nullptr);
+
+		std::vector<VkExtensionProperties> AvailableExtensions(ExtensionCount);
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &ExtensionCount, AvailableExtensions.data());
+
+		std::set <std::string> DesiredExtensions = {
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		};
+
+		for (const auto& Extension : AvailableExtensions)
+		{
+			DesiredExtensions.erase(Extension.extensionName);
+		}
+
+		return DesiredExtensions.empty();
+	}
+
+	DeviceProperties VulkanPhysicalDevice::Query(VkPhysicalDevice device, const VulkanSurface& surface)
 	{
 		DeviceProperties Prop{};
 
@@ -57,8 +80,29 @@ namespace FTMGui {
 			if (Property.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 				Prop.QueueFamily.GraphicsFamily = k;
 
+			VkBool32 PresentSupport = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, k, surface.Get(), &PresentSupport);
+
+			if (PresentSupport)
+				Prop.QueueFamily.PresentFamily = k;
+
 			k++;
 		}
+
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface.Get(), &Prop.SurfaceCapabilites);
+
+		uint32_t SurfaceFormatCount = 0;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface.Get(), &SurfaceFormatCount, nullptr);
+
+		Prop.SurfaceFormats.resize(SurfaceFormatCount);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface.Get(), &SurfaceFormatCount, Prop.SurfaceFormats.data());
+
+		uint32_t PresentModeCount = 0;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface.Get(), &PresentModeCount, nullptr);
+
+		Prop.PresentModes.resize(PresentModeCount);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface.Get(), &PresentModeCount, Prop.PresentModes.data());
+
 
 		return Prop;
 	}

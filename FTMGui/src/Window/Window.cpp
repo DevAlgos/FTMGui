@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "Utils/Log.h"
+
 namespace FTMGui {
 	
 	Window::Window(const WindowInfo& info)
@@ -11,7 +13,7 @@ namespace FTMGui {
 		m_WindowInfo.AddEventListener(listner);
 
 		if (!glfwInit())
-			__debugbreak();
+			FTMGUI_HALT();
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -20,7 +22,7 @@ namespace FTMGui {
 
 		/*window creation failure*/
 		if (!m_Handle)
-			__debugbreak();
+			FTMGUI_HALT();
 
 		/*
 		* lets glfw access data from s_FTMGuiGlobals, this is nice to have

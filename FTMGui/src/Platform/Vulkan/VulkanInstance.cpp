@@ -1,6 +1,7 @@
 #include "VulkanInstance.h"
 
-#include <GLFW/glfw3.h>
+#include "Window/GLFWBase.h"
+
 #include <vector>
 
 namespace FTMGui {
@@ -173,11 +174,12 @@ namespace FTMGui {
 
 	void VulkanInstance::DestroyDebugUtils()
 	{
+#ifdef VK_VALIDATION
 		auto fun = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_Instance, "vkDestroyDebugUtilsMessengerEXT");
 		if (!fun)
 			return;
 
-#ifdef VK_VALIDATION
+
 		fun(m_Instance, m_DebugMessenger, nullptr);
 #endif
 	}
