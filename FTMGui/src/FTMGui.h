@@ -6,6 +6,7 @@
 
 #include "Platform/Vulkan/VulkanDevice.h"
 #include "Platform/Vulkan/VulkanSurface.h"
+#include "Platform/Vulkan/VulkanSwapchain.h"
 
 #include <memory>
 
@@ -37,6 +38,7 @@ namespace FTMGui {
 
 	private:
 		Ref<VulkanInstance> m_VkInstance;
+		Ref<VulkanDevice> m_VkDevice;
 
 		Platform m_Platform;
 
@@ -44,7 +46,7 @@ namespace FTMGui {
 		Scope<VulkanSurface> m_MainSurface;
 
 		Scope<VulkanPhysicalDevice> m_VkPhysicalDevice;
-		Scope<VulkanDevice> m_VkDevice;
+		Scope<VulkanSwapchain> m_SwapChain;
 	};
 
 }

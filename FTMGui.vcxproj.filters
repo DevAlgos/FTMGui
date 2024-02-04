@@ -30,6 +30,7 @@
     </ClCompile>
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanDevice.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSurface.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSwapchain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -40,5 +41,6 @@
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanDevice.h" />
     <ClInclude Include="FTMGui\src\Window\GLFWBase.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSurface.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSwapchain.h" />
   </ItemGroup>
 </Project>

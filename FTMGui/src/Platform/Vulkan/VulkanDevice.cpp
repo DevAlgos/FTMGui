@@ -28,6 +28,7 @@ namespace FTMGui {
 		
 
 		VkPhysicalDeviceFeatures deviceFeatures{}; //TODO come back to this
+		deviceFeatures.samplerAnisotropy = VK_TRUE;
 
 		VkDeviceCreateInfo DeviceCreateInfo{};
 		DeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
