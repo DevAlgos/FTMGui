@@ -2,39 +2,12 @@
 #include "Utils/Log.h"
 
 namespace FTMGui {
-
-	const std::string TestVertexShader = R"(
-    #version 460
-
-    vec2 positions[3] = vec2[](
-        vec2(0.0, -0.5),
-        vec2(0.5, 0.5),
-        vec2(-0.5, 0.5)
-    );
-
-    void main() 
-    {
-        gl_Position = vec4(positions[gl_VertexIndex], 0.0, 1.0);
-    }
-	)";
-
-	const std::string TestFragmentShader = R"(
-
-	#version 460
-
-	layout(location = 0) out vec4 outColor;
-
-	void main() 
-	{
-		outColor = vec4(1.0, 0.0, 0.0, 1.0);
-	}
-	)";
-
-
 	FTMGuiContext::FTMGuiContext(Platform platform, const WindowInfo& info)
 		: m_Platform(platform)
 	{
 		Log::Init();
+
+		FTMGUI_LOG_INFO(std::filesystem::current_path());
 
 		m_MainWindow = MakeScope<Window>(info);
 
@@ -49,6 +22,24 @@ namespace FTMGui {
 												 GetScope(m_VkPhysicalDevice), 
 												 m_MainWindow->GetHandle());
 		
+		m_RenderPass = MakeScope<VulkanRenderPass>(m_VkDevice, GetScope(m_SwapChain));
+
+		std::unordered_map<ShaderType, std::filesystem::path> Shaders;
+		Shaders[ShaderType::FragmentShader] = "FTMGui/src/Platform/Vulkan/frag.spv";
+		Shaders[ShaderType::VertexShader] = "FTMGui/src/Platform/Vulkan/vert.spv";
+
+		m_RenderPipeline = MakeScope<VulkanPipeline>(m_VkDevice, GetScope(m_SwapChain), GetScope(m_RenderPass), Shaders);
+		
+		m_Framebuffers.reserve(m_SwapChain->GetImageViews().size() + 1);
+		for (uint32_t i = 0; i < m_SwapChain->GetImageViews().size(); i++)
+			m_Framebuffers.emplace_back(m_VkDevice, GetScope(m_RenderPass), GetScope(m_SwapChain), i);
+
+		m_CommandBuffer = MakeScope<VulkanCommandBuffer>(m_VkDevice, GetScope(m_VkPhysicalDevice));
+	
+		m_InFlightFence = MakeScope<VulkanFence>(m_VkDevice);
+		m_ImageAvailableSemaphore = MakeScope<VulkanSemaphore>(m_VkDevice);
+		m_RenderFinishedSemaphore = MakeScope<VulkanSemaphore>(m_VkDevice);
+
 	}
 
 	FTMGuiContext::~FTMGuiContext()
@@ -59,6 +50,77 @@ namespace FTMGui {
 	void FTMGuiContext::UpdateCtx()
 	{
 		m_MainWindow->Update();
+
+		m_InFlightFence->Wait();
+
+		uint32_t ImageIndex{};
+		vkAcquireNextImageKHR(m_VkDevice->GetHandle(),
+							  m_SwapChain->Get(), 
+							  UINT64_MAX, 
+							  m_ImageAvailableSemaphore->GetHandle(), 
+							  nullptr, 
+							  &ImageIndex);
+
+		m_CommandBuffer->ResetCommandBuffer();
+		m_CommandBuffer->RecordCommandBuffer(m_Framebuffers[ImageIndex], GetScope(m_SwapChain),
+			GetScope(m_RenderPipeline), GetScope(m_RenderPass), ImageIndex);
+
+		VkSubmitInfo SubmitInfo{};
+		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		
+		VkSemaphore WaitSemaphores[] = { m_ImageAvailableSemaphore->GetHandle()};
+		VkPipelineStageFlags WaitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		SubmitInfo.waitSemaphoreCount = 1;
+		SubmitInfo.pWaitSemaphores = WaitSemaphores;
+		SubmitInfo.pWaitDstStageMask = WaitStages;
+
+		VkCommandBuffer CmdBuffer[] = { m_CommandBuffer->GetHandle() };
+
+		SubmitInfo.pCommandBuffers = CmdBuffer;
+		SubmitInfo.commandBufferCount = 1;
+
+		VkSemaphore SignalSemaphores[] = { m_RenderFinishedSemaphore->GetHandle() };
+		SubmitInfo.pSignalSemaphores = SignalSemaphores;
+		SubmitInfo.signalSemaphoreCount = 1;
+
+		vkCall(vkQueueSubmit, m_VkDevice->GetGraphicsQueue(), 1, &SubmitInfo, m_InFlightFence->GetHandle());
+
+		VkPresentInfoKHR PresentInfo{};
+		PresentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+		PresentInfo.waitSemaphoreCount = 1;
+		PresentInfo.pWaitSemaphores = SignalSemaphores;
+		
+		VkSwapchainKHR swapChains[] = { m_SwapChain->Get()};
+		PresentInfo.swapchainCount = 1;
+		PresentInfo.pSwapchains = swapChains;
+		PresentInfo.pImageIndices = &ImageIndex;
+
+		vkQueuePresentKHR(m_VkDevice->GetPresentQueue(), &PresentInfo);
+
+		if (m_MainWindow->IsWindowResizing())
+		{
+			vkDeviceWaitIdle(m_VkDevice->GetHandle());
+
+			m_SwapChain = nullptr;
+			m_MainSurface = nullptr;
+
+
+			m_MainSurface = MakeScope<VulkanSurface>(m_MainWindow->GetHandle(), m_VkInstance);
+			m_VkPhysicalDevice->ReQuery(GetScope(m_MainSurface));
+			m_SwapChain = MakeScope<VulkanSwapchain>(m_VkDevice, GetScope(m_MainSurface),
+				GetScope(m_VkPhysicalDevice),m_MainWindow->GetHandle());
+
+			m_Framebuffers.clear();
+			m_Framebuffers.reserve(m_SwapChain->GetImageViews().size() + 1);
+			for (uint32_t i = 0; i < m_SwapChain->GetImageViews().size(); i++)
+				m_Framebuffers.emplace_back(m_VkDevice, GetScope(m_RenderPass), GetScope(m_SwapChain), i);
+	
+			m_MainWindow->ResetResizing();
+		}
+
+		if (m_MainWindow->WindowClosed())
+			vkDeviceWaitIdle(m_VkDevice->GetHandle());
 	}
 
 }

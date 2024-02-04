@@ -4,6 +4,7 @@
 
 #include <algorithm>
 
+
 namespace FTMGui {
 
 	VulkanSwapchain::VulkanSwapchain(const Ref<VulkanDevice>& VkDevice, 
@@ -52,6 +53,12 @@ namespace FTMGui {
 		CreateInfo.presentMode = PresentMode;
 		CreateInfo.clipped = VK_TRUE;
 		CreateInfo.oldSwapchain = nullptr;
+
+		VkSwapchainPresentScalingCreateInfoEXT ScalingCreateInfo{};
+		ScalingCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT;
+		ScalingCreateInfo.scalingBehavior = VK_PRESENT_SCALING_ASPECT_RATIO_STRETCH_BIT_EXT;
+		
+		CreateInfo.pNext = &ScalingCreateInfo;
 
 		vkCall(vkCreateSwapchainKHR, m_VkDevice->GetHandle(), &CreateInfo, nullptr, &m_SwapChain);
 
@@ -121,17 +128,26 @@ namespace FTMGui {
 	VkExtent2D VulkanSwapchain::ChooseSwapExtent(const VulkanPhysicalDevice& device, GLFWwindow* window)
 	{
 		const auto& Capabilities = device.GetProperties().SurfaceCapabilites;
-
-		if (Capabilities.currentExtent.width != UINT32_MAX)
-			return Capabilities.currentExtent;
 		
 		int width, height;
-		glfwGetFramebufferSize(window, &width, &height); 
+		glfwGetFramebufferSize(window, &width, &height);
 
-		VkExtent2D Extent = { (uint32_t)width, (uint32_t)height };
-		Extent.width = std::clamp(Extent.width, Capabilities.minImageExtent.width, Capabilities.maxImageExtent.width);
-		Extent.height = std::clamp(Extent.height, Capabilities.minImageExtent.height, Capabilities.maxImageExtent.height);
-		return Extent;
+		VkExtent2D actualExtent = {
+			(uint32_t)(width),
+			(uint32_t)(height)
+		};
+
+		//this just to avoid the min conflic from other std::min used by vulkan-core.h
+#ifdef min 
+#undef min
+
+		actualExtent.width = std::min(actualExtent.width, Capabilities.maxImageExtent.width);
+		actualExtent.height = std::min(actualExtent.height, Capabilities.maxImageExtent.height);
+
+#define min(a,b)  (((a) < (b)) ? (a) : (b))
+#endif
+
+		return actualExtent;
 	}
 
 }

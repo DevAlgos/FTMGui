@@ -43,11 +43,7 @@ namespace FTMGui {
 				self->width = width;
 				self->height = height;
 
-				/*
-				* TODO: will need to add a proper viewport system so this will be added later
-				* this will be important for drawing to multiple windows/sections of windows
-				*/
-				//glViewport();
+				self->windowResizing = true;
 			});
 
 		glfwSetKeyCallback(m_Handle, [](GLFWwindow* window, int key, int scancode, int action, int mods) 
@@ -72,8 +68,6 @@ namespace FTMGui {
 		glfwPollEvents();
 
 		m_WindowInfo.DispatchEvents();
-
-		glfwSwapBuffers(m_Handle);
 	}
 	void Window::AddEventListener(const EventListener& listener)
 	{

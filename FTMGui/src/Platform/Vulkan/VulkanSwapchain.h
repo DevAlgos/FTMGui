@@ -24,7 +24,9 @@ namespace FTMGui {
 	private:
 		VkSurfaceFormatKHR ChooseSurfaceFormat(const VulkanPhysicalDevice& device);
 		VkPresentModeKHR   ChoosePresentMode(const VulkanPhysicalDevice& device);
+
 		VkExtent2D		   ChooseSwapExtent(const VulkanPhysicalDevice& device, GLFWwindow* window);
+
 
 	private:
 		VkSwapchainKHR m_SwapChain;

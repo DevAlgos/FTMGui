@@ -269,9 +269,17 @@
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Utils\Log.cpp" />
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Utils\Logging.cpp" />
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Window\Window.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanCommandBuffer.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanCommandPool.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanDevice.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanFence.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanFramebuffer.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanPipeline.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanRenderPass.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSemaphore.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSurface.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSwapchain.cpp" />
+    <ClCompile Include="FTMGui\src\Utils\File.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\ExternalLibs\glfw\src\glfw.vcxproj">
@@ -280,10 +288,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanCommandBuffer.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanCommandPool.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanDevice.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanFence.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanFramebuffer.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanPipeline.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanRenderPass.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSemaphore.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSurface.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSwapchain.h" />
+    <ClInclude Include="FTMGui\src\Utils\File.h" />
     <ClInclude Include="FTMGui\src\Window\GLFWBase.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FTMGui\src\Platform\Vulkan\TestShader.frag" />
+    <None Include="FTMGui\src\Platform\Vulkan\TestShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

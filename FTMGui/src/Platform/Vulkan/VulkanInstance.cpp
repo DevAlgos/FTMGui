@@ -119,7 +119,8 @@ namespace FTMGui {
 	{
 		DestroyDebugUtils();
 
-		vkCall(vkDestroyInstance, m_Instance, nullptr);
+		if(m_Instance)
+			vkCall(vkDestroyInstance, m_Instance, nullptr);
 	}
 
 	std::vector<const char*> VulkanInstance::GetExtensions()
@@ -179,8 +180,8 @@ namespace FTMGui {
 		if (!fun)
 			return;
 
-
-		fun(m_Instance, m_DebugMessenger, nullptr);
+		if(m_DebugMessenger)
+			fun(m_Instance, m_DebugMessenger, nullptr);
 #endif
 	}
 

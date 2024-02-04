@@ -11,7 +11,8 @@ namespace FTMGui {
 
 	VulkanSurface::~VulkanSurface()
 	{
-		vkDestroySurfaceKHR(m_VkInstance->GetHandle(), m_WindowSurface, nullptr);
+		if(m_WindowSurface)
+			vkDestroySurfaceKHR(m_VkInstance->GetHandle(), m_WindowSurface, nullptr);
 	}
 
 }

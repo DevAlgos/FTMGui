@@ -35,6 +35,8 @@ namespace FTMGui {
 		inline const VkPhysicalDevice  Get() const { return m_PhysicalDevice; }
 		inline const DeviceProperties& GetProperties() const { return m_DeviceProperties; }
 
+		void ReQuery(const VulkanSurface& surface);
+
 	private:
 
 		bool IsDeviceSuitable(const VkPhysicalDevice& device, const DeviceProperties& Properties);

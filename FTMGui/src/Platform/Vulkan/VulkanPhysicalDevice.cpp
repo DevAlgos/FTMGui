@@ -20,6 +20,8 @@ namespace FTMGui {
 			if (IsDeviceSuitable(Device, Properties))
 			{
 				FTMGUI_LOG_INFO("Device ", Properties.Properties.deviceName, " chosen");
+				FTMGUI_LOG_INFO("Device image width extent ", 
+					Properties.SurfaceCapabilites.minImageExtent.width, " ", Properties.SurfaceCapabilites.maxImageExtent.width);
 				m_PhysicalDevice = Device;
 				m_DeviceProperties = Properties;
 				break;
@@ -29,6 +31,11 @@ namespace FTMGui {
 	}
 	VulkanPhysicalDevice::~VulkanPhysicalDevice()
 	{
+	}
+
+	void VulkanPhysicalDevice::ReQuery(const VulkanSurface& surface)
+	{
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_PhysicalDevice, surface.Get(), &m_DeviceProperties.SurfaceCapabilites);
 	}
 
 	bool VulkanPhysicalDevice::IsDeviceSuitable(const VkPhysicalDevice& device, const DeviceProperties& Properties)

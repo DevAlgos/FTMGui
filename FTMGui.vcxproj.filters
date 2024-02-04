@@ -31,6 +31,14 @@
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanDevice.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSurface.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSwapchain.cpp" />
+    <ClCompile Include="FTMGui\src\Utils\File.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanPipeline.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanRenderPass.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanFramebuffer.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanCommandPool.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanCommandBuffer.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSemaphore.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanFence.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -42,5 +50,17 @@
     <ClInclude Include="FTMGui\src\Window\GLFWBase.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSurface.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSwapchain.h" />
+    <ClInclude Include="FTMGui\src\Utils\File.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanPipeline.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanRenderPass.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanFramebuffer.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanCommandPool.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanCommandBuffer.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSemaphore.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanFence.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FTMGui\src\Platform\Vulkan\TestShader.vert" />
+    <None Include="FTMGui\src\Platform\Vulkan\TestShader.frag" />
   </ItemGroup>
 </Project>

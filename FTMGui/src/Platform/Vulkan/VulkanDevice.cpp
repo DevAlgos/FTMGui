@@ -80,6 +80,7 @@ namespace FTMGui {
 
 	VulkanDevice::~VulkanDevice()
 	{
-		vkDestroyDevice(m_Device, nullptr);
+		if(m_Device)
+			vkDestroyDevice(m_Device, nullptr);
 	}
 }

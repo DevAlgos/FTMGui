@@ -20,6 +20,7 @@ namespace FTMGui {
 		bool vSync = false;
 
 		bool windowClose = false;
+		bool windowResizing = false;
 
 		void AddEventListener(const EventListener& listener)
 		{
@@ -59,6 +60,9 @@ namespace FTMGui {
 		inline const uint32_t		  GetWidth()     const	 { return m_WindowInfo.width; }
 		inline const uint32_t		  GetHeight()    const	 { return m_WindowInfo.height; }
 		inline const bool			  WindowClosed() const	 { return m_WindowInfo.windowClose; }
+		inline const bool			  IsWindowResizing() const { return m_WindowInfo.windowResizing; }
+
+		inline void ResetResizing() { m_WindowInfo.windowResizing = false; }
 
 	private:
 		GLFWwindow* m_Handle;
