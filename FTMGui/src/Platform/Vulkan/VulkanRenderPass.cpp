@@ -1,5 +1,9 @@
 #include "VulkanRenderPass.h"
 
+#include "VulkanPipeline.h"
+#include "VulkanFramebuffer.h"
+#include "VulkanCommandBuffer.h"
+
 namespace FTMGui {
 
 	VulkanRenderPass::VulkanRenderPass(const Ref<VulkanDevice>& Device, 
@@ -54,5 +58,63 @@ namespace FTMGui {
 	{
 		if(m_RenderPass)
 			vkDestroyRenderPass(m_VkDevice->GetHandle(), m_RenderPass, nullptr);
+	}
+
+	void VulkanRenderPass::BeginRenderPass(const VulkanCommandBuffer& Buffer, 
+										   const VulkanFramebuffer& Framebuffer, 
+										   const VulkanSwapchain& Swapchain, 
+										   const VulkanPipeline& Pipeline, 
+										   uint32_t ImageIndex) const
+	{
+		VkCommandBufferBeginInfo CmdBufferBegin{};
+		CmdBufferBegin.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		CmdBufferBegin.flags = 0;
+		CmdBufferBegin.pInheritanceInfo = nullptr;
+
+		vkCall(vkBeginCommandBuffer, Buffer.GetHandle(), &CmdBufferBegin);
+
+
+		VkRenderPassBeginInfo BeginInfo{};
+		BeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		BeginInfo.framebuffer = Framebuffer.GetHandle();
+		BeginInfo.renderPass = m_RenderPass;
+
+		VkClearValue Value = {0.0f, 0.0f, 0.0f, 1.0f};
+
+		BeginInfo.clearValueCount = 1;
+		BeginInfo.pClearValues = &Value;
+
+		VkRect2D RenderArea{};
+		RenderArea.extent = Swapchain.GetImageExtent();
+		RenderArea.offset = { 0,0 };
+
+		BeginInfo.renderArea = RenderArea;
+		
+		vkCmdBeginRenderPass(Buffer.GetHandle(), &BeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		vkCmdBindPipeline(Buffer.GetHandle(), VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline.GetHandle());
+
+		VkViewport Viewport{};
+		Viewport.width = (float)Swapchain.GetImageExtent().width;
+		Viewport.height = (float)Swapchain.GetImageExtent().height;
+		Viewport.minDepth = 0.0f;
+		Viewport.maxDepth = 1.0f;
+		Viewport.x = 0.0f;
+		Viewport.y = 0.0f;
+		
+		vkCmdSetViewport(Buffer.GetHandle(), 0, 1, &Viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = Swapchain.GetImageExtent();
+		vkCmdSetScissor(Buffer.GetHandle(), 0, 1, &scissor);
+
+
+	}
+	void VulkanRenderPass::EndRenderPass(const VulkanCommandBuffer& Buffer)
+	{
+		vkCmdEndRenderPass(Buffer.GetHandle());
+
+		vkCall(vkEndCommandBuffer, Buffer.GetHandle());
 	}
 }

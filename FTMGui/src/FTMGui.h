@@ -30,6 +30,8 @@ namespace FTMGui {
 		std::string_view appName = "App";
 	};
 
+	static constexpr uint32_t MaxFramesInFlight = 2;
+
 	class FTMGuiContext
 	{
 	public:
@@ -47,6 +49,7 @@ namespace FTMGui {
 		Ref<VulkanDevice> m_VkDevice;
 
 		Platform m_Platform;
+		uint32_t m_CurrentFrame = 0;
 
 		Scope<Window>  m_MainWindow;
 		Scope<VulkanSurface> m_MainSurface;
@@ -57,11 +60,11 @@ namespace FTMGui {
 		Scope<VulkanRenderPass> m_RenderPass;
 		Scope<VulkanPipeline> m_RenderPipeline;
 
-		Scope<VulkanCommandBuffer> m_CommandBuffer;
+		std::vector<VulkanCommandBuffer> m_CommandBuffers;
 
-		Scope<VulkanFence> m_InFlightFence;
-		Scope<VulkanSemaphore> m_ImageAvailableSemaphore;
-		Scope<VulkanSemaphore> m_RenderFinishedSemaphore;
+		std::vector<VulkanFence> m_InFlightFences;
+		std::vector<VulkanSemaphore> m_ImageAvailableSemaphores;
+		std::vector<VulkanSemaphore> m_RenderFinishedSemaphores;
 
 		std::vector<VulkanFramebuffer> m_Framebuffers;
 	};

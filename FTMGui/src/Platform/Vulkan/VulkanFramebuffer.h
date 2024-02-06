@@ -1,9 +1,13 @@
 #pragma once
 
+#include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
 #include "VulkanRenderPass.h"
 
 namespace FTMGui {
+
+	class VulkanRenderPass;
+	class VulkanSwapchain;
 
 	class VulkanFramebuffer
 	{

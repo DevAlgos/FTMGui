@@ -1,7 +1,7 @@
 #pragma once
 
-#include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
+#include "VulkanSurface.h"
 
 namespace FTMGui {
 

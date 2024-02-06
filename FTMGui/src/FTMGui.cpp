@@ -34,11 +34,21 @@ namespace FTMGui {
 		for (uint32_t i = 0; i < m_SwapChain->GetImageViews().size(); i++)
 			m_Framebuffers.emplace_back(m_VkDevice, GetScope(m_RenderPass), GetScope(m_SwapChain), i);
 
-		m_CommandBuffer = MakeScope<VulkanCommandBuffer>(m_VkDevice, GetScope(m_VkPhysicalDevice));
-	
-		m_InFlightFence = MakeScope<VulkanFence>(m_VkDevice);
-		m_ImageAvailableSemaphore = MakeScope<VulkanSemaphore>(m_VkDevice);
-		m_RenderFinishedSemaphore = MakeScope<VulkanSemaphore>(m_VkDevice);
+		m_CommandBuffers.reserve(MaxFramesInFlight);
+		for (size_t i = 0; i < MaxFramesInFlight; i++)
+			m_CommandBuffers.emplace_back(m_VkDevice, GetScope(m_VkPhysicalDevice));
+
+		m_InFlightFences.reserve(MaxFramesInFlight);
+		for (size_t i = 0; i < MaxFramesInFlight; i++)
+			m_InFlightFences.emplace_back(m_VkDevice);
+
+		m_ImageAvailableSemaphores.reserve(MaxFramesInFlight);
+		for (size_t i = 0; i < MaxFramesInFlight; i++)
+			m_ImageAvailableSemaphores.emplace_back(m_VkDevice);
+
+		m_RenderFinishedSemaphores.reserve(MaxFramesInFlight);
+		for (size_t i = 0; i < MaxFramesInFlight; i++)
+			m_RenderFinishedSemaphores.emplace_back(m_VkDevice);
 
 	}
 
@@ -51,39 +61,67 @@ namespace FTMGui {
 	{
 		m_MainWindow->Update();
 
-		m_InFlightFence->Wait();
+		m_InFlightFences[m_CurrentFrame].Wait();
 
 		uint32_t ImageIndex{};
-		vkAcquireNextImageKHR(m_VkDevice->GetHandle(),
+
+		VkResult res = vkAcquireNextImageKHR(m_VkDevice->GetHandle(),
 							  m_SwapChain->Get(), 
 							  UINT64_MAX, 
-							  m_ImageAvailableSemaphore->GetHandle(), 
+							  m_ImageAvailableSemaphores[m_CurrentFrame].GetHandle(),
 							  nullptr, 
 							  &ImageIndex);
 
-		m_CommandBuffer->ResetCommandBuffer();
-		m_CommandBuffer->RecordCommandBuffer(m_Framebuffers[ImageIndex], GetScope(m_SwapChain),
-			GetScope(m_RenderPipeline), GetScope(m_RenderPass), ImageIndex);
+		if (res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
+		{
+			vkDeviceWaitIdle(m_VkDevice->GetHandle());
+
+			m_SwapChain = nullptr;
+			m_MainSurface = nullptr;
+
+
+			m_MainSurface = MakeScope<VulkanSurface>(m_MainWindow->GetHandle(), m_VkInstance);
+			m_VkPhysicalDevice->ReQuery(GetScope(m_MainSurface));
+			m_SwapChain = MakeScope<VulkanSwapchain>(m_VkDevice, GetScope(m_MainSurface),
+				GetScope(m_VkPhysicalDevice), m_MainWindow->GetHandle());
+
+			m_Framebuffers.clear();
+			m_Framebuffers.reserve(m_SwapChain->GetImageViews().size() + 1);
+			for (uint32_t i = 0; i < m_SwapChain->GetImageViews().size(); i++)
+				m_Framebuffers.emplace_back(m_VkDevice, GetScope(m_RenderPass), GetScope(m_SwapChain), i);
+
+			m_MainWindow->ResetResizing();
+		}
+
+		m_CommandBuffers[m_CurrentFrame].ResetCommandBuffer();
+
+		m_RenderPass->BeginRenderPass(m_CommandBuffers[m_CurrentFrame], m_Framebuffers[ImageIndex],
+			GetScope(m_SwapChain), GetScope(m_RenderPipeline), ImageIndex);
+
+		vkCmdDraw(m_CommandBuffers[m_CurrentFrame].GetHandle(), 3, 1, 0, 0);
+
+		m_RenderPass->EndRenderPass(m_CommandBuffers[m_CurrentFrame]);
+
 
 		VkSubmitInfo SubmitInfo{};
 		SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		
-		VkSemaphore WaitSemaphores[] = { m_ImageAvailableSemaphore->GetHandle()};
+		VkSemaphore WaitSemaphores[] = { m_ImageAvailableSemaphores[m_CurrentFrame].GetHandle()};
 		VkPipelineStageFlags WaitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		SubmitInfo.waitSemaphoreCount = 1;
 		SubmitInfo.pWaitSemaphores = WaitSemaphores;
 		SubmitInfo.pWaitDstStageMask = WaitStages;
 
-		VkCommandBuffer CmdBuffer[] = { m_CommandBuffer->GetHandle() };
+		VkCommandBuffer CmdBuffer[] = { m_CommandBuffers[m_CurrentFrame].GetHandle()};
 
 		SubmitInfo.pCommandBuffers = CmdBuffer;
 		SubmitInfo.commandBufferCount = 1;
 
-		VkSemaphore SignalSemaphores[] = { m_RenderFinishedSemaphore->GetHandle() };
+		VkSemaphore SignalSemaphores[] = { m_RenderFinishedSemaphores[m_CurrentFrame].GetHandle() };
 		SubmitInfo.pSignalSemaphores = SignalSemaphores;
 		SubmitInfo.signalSemaphoreCount = 1;
 
-		vkCall(vkQueueSubmit, m_VkDevice->GetGraphicsQueue(), 1, &SubmitInfo, m_InFlightFence->GetHandle());
+		vkCall(vkQueueSubmit, m_VkDevice->GetGraphicsQueue(), 1, &SubmitInfo, m_InFlightFences[m_CurrentFrame].GetHandle());
 
 		VkPresentInfoKHR PresentInfo{};
 		PresentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -98,29 +136,10 @@ namespace FTMGui {
 
 		vkQueuePresentKHR(m_VkDevice->GetPresentQueue(), &PresentInfo);
 
-		if (m_MainWindow->IsWindowResizing())
-		{
-			vkDeviceWaitIdle(m_VkDevice->GetHandle());
-
-			m_SwapChain = nullptr;
-			m_MainSurface = nullptr;
-
-
-			m_MainSurface = MakeScope<VulkanSurface>(m_MainWindow->GetHandle(), m_VkInstance);
-			m_VkPhysicalDevice->ReQuery(GetScope(m_MainSurface));
-			m_SwapChain = MakeScope<VulkanSwapchain>(m_VkDevice, GetScope(m_MainSurface),
-				GetScope(m_VkPhysicalDevice),m_MainWindow->GetHandle());
-
-			m_Framebuffers.clear();
-			m_Framebuffers.reserve(m_SwapChain->GetImageViews().size() + 1);
-			for (uint32_t i = 0; i < m_SwapChain->GetImageViews().size(); i++)
-				m_Framebuffers.emplace_back(m_VkDevice, GetScope(m_RenderPass), GetScope(m_SwapChain), i);
-	
-			m_MainWindow->ResetResizing();
-		}
-
 		if (m_MainWindow->WindowClosed())
 			vkDeviceWaitIdle(m_VkDevice->GetHandle());
+
+		m_CurrentFrame = (m_CurrentFrame + 1) % MaxFramesInFlight;
 	}
 
 }
