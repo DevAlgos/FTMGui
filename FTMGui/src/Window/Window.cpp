@@ -21,8 +21,7 @@ namespace FTMGui {
 		m_Handle = glfwCreateWindow(m_WindowInfo.width, m_WindowInfo.height, m_WindowInfo.title.data(), nullptr, nullptr);
 
 		/*window creation failure*/
-		if (!m_Handle)
-			FTMGUI_HALT();
+		FTMGUI_ASSERT(m_Handle, "window failed");
 
 		/*
 		* lets glfw access data from s_FTMGuiGlobals, this is nice to have
@@ -42,8 +41,6 @@ namespace FTMGui {
 
 				self->width = width;
 				self->height = height;
-
-				self->windowResizing = true;
 			});
 
 		glfwSetKeyCallback(m_Handle, [](GLFWwindow* window, int key, int scancode, int action, int mods) 

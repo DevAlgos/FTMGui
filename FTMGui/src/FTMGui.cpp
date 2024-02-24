@@ -1,6 +1,10 @@
 #include "FTMGui.h"
 #include "Utils/Log.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
+#include <glm/glm.hpp>
+
 namespace FTMGui {
 	FTMGuiContext::FTMGuiContext(Platform platform, const WindowInfo& info)
 		: m_Platform(platform)
@@ -28,7 +32,25 @@ namespace FTMGui {
 		Shaders[ShaderType::FragmentShader] = "FTMGui/src/Platform/Vulkan/frag.spv";
 		Shaders[ShaderType::VertexShader] = "FTMGui/src/Platform/Vulkan/vert.spv";
 
-		m_RenderPipeline = MakeScope<VulkanPipeline>(m_VkDevice, GetScope(m_SwapChain), GetScope(m_RenderPass), Shaders);
+
+		const std::vector<Vertex> vertices = {
+			{{0.0f, -0.5f, 0.0f}, {0.4f, 0.0f, 0.0f}},
+			{{0.5f, 0.5f, 0.0f}, {0.0f, 0.9f, 0.0f}},
+			{{-0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}}
+		};
+
+		VulkanBufferDescription BufferDesc;
+		BufferDesc.LogicalDevice = m_VkDevice;
+		BufferDesc.PhysicalDevice = GetScope(m_VkPhysicalDevice);
+		BufferDesc.Attributes = { Attribute::FLOAT_3, Attribute::FLOAT_3 };
+		
+
+		m_VertexBuffer = MakeScope<VulkanBuffer>(BufferDesc, 
+			USAGE_VERTEX_BUFFER_BIT, MEMORY_HOST_VISIBLE_BIT | MEMORY_HOST_COHERENT_BIT, 
+			vertices.size() * 6 * sizeof(float), glm::value_ptr(vertices[0].Position));
+
+		m_RenderPipeline = MakeScope<VulkanPipeline>(m_VkDevice, GetScope(m_SwapChain), GetScope(m_RenderPass), Shaders, 
+			m_VertexBuffer.get(), 1);
 		
 		m_Framebuffers.reserve(m_SwapChain->GetImageViews().size() + 1);
 		for (uint32_t i = 0; i < m_SwapChain->GetImageViews().size(); i++)
@@ -36,7 +58,7 @@ namespace FTMGui {
 
 		m_CommandBuffers.reserve(MaxFramesInFlight);
 		for (size_t i = 0; i < MaxFramesInFlight; i++)
-			m_CommandBuffers.emplace_back(m_VkDevice, GetScope(m_VkPhysicalDevice));
+			m_CommandBuffers.emplace_back(m_VkDevice, GetScope(m_VkPhysicalDevice), CREATE_RESET_COMMAND_BUFFER_BIT);
 
 		m_InFlightFences.reserve(MaxFramesInFlight);
 		for (size_t i = 0; i < MaxFramesInFlight; i++)
@@ -49,7 +71,6 @@ namespace FTMGui {
 		m_RenderFinishedSemaphores.reserve(MaxFramesInFlight);
 		for (size_t i = 0; i < MaxFramesInFlight; i++)
 			m_RenderFinishedSemaphores.emplace_back(m_VkDevice);
-
 	}
 
 	FTMGuiContext::~FTMGuiContext()
@@ -66,11 +87,11 @@ namespace FTMGui {
 		uint32_t ImageIndex{};
 
 		VkResult res = vkAcquireNextImageKHR(m_VkDevice->GetHandle(),
-							  m_SwapChain->Get(), 
-							  UINT64_MAX, 
-							  m_ImageAvailableSemaphores[m_CurrentFrame].GetHandle(),
-							  nullptr, 
-							  &ImageIndex);
+											 m_SwapChain->Get(), 
+											 UINT64_MAX, 
+											 m_ImageAvailableSemaphores[m_CurrentFrame].GetHandle(),
+											 nullptr, 
+											 &ImageIndex);
 
 		if (res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
 		{
@@ -89,8 +110,6 @@ namespace FTMGui {
 			m_Framebuffers.reserve(m_SwapChain->GetImageViews().size() + 1);
 			for (uint32_t i = 0; i < m_SwapChain->GetImageViews().size(); i++)
 				m_Framebuffers.emplace_back(m_VkDevice, GetScope(m_RenderPass), GetScope(m_SwapChain), i);
-
-			m_MainWindow->ResetResizing();
 		}
 
 		m_CommandBuffers[m_CurrentFrame].ResetCommandBuffer();
@@ -98,6 +117,7 @@ namespace FTMGui {
 		m_RenderPass->BeginRenderPass(m_CommandBuffers[m_CurrentFrame], m_Framebuffers[ImageIndex],
 			GetScope(m_SwapChain), GetScope(m_RenderPipeline), ImageIndex);
 
+		m_VertexBuffer->Bind(m_CommandBuffers[m_CurrentFrame]);
 		vkCmdDraw(m_CommandBuffers[m_CurrentFrame].GetHandle(), 3, 1, 0, 0);
 
 		m_RenderPass->EndRenderPass(m_CommandBuffers[m_CurrentFrame]);

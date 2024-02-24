@@ -33,7 +33,6 @@ namespace FTMGui {
 		
 		VkRenderPassCreateInfo CreateInfo{};
 		CreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		CreateInfo.attachmentCount = 1;
 		CreateInfo.pSubpasses = &subpass;
 		CreateInfo.subpassCount = 1;
 		CreateInfo.pAttachments = &colorAttachment;

@@ -137,7 +137,7 @@ namespace FTMGui {
 			(uint32_t)(height)
 		};
 
-		//this just to avoid the min conflic from other std::min used by vulkan-core.h
+		//this just to avoid the min conflict from other std::min used by vulkan-core.h
 #ifdef min 
 #undef min
 

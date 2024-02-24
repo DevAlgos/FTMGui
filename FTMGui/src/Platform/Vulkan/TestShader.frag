@@ -2,6 +2,10 @@
 
 layout(location = 0) out vec4 outColor;
 
-void main() {
-    outColor = vec4(0.0, 1.0, 1.0, 1.0);
+
+layout(location = 0) in vec3 o_Color;
+
+void main() 
+{
+    outColor = vec4(o_Color, 1.0);
 }

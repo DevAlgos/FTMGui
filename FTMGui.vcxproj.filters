@@ -39,6 +39,7 @@
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanCommandBuffer.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanSemaphore.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanFence.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -58,6 +59,8 @@
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanCommandBuffer.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanSemaphore.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanFence.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanBuffer.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FTMGui\src\Platform\Vulkan\TestShader.vert" />

@@ -8,7 +8,8 @@ namespace FTMGui {
 	VulkanPipeline::VulkanPipeline(const Ref<VulkanDevice>& vkDevice, 
 								   const VulkanSwapchain& Swapchain,
 								   const VulkanRenderPass& RenderPass,
-								   const std::unordered_map<ShaderType, std::filesystem::path>& ShaderPaths)
+								   const std::unordered_map<ShaderType, std::filesystem::path>& ShaderPaths,
+								   VulkanBuffer* VertexBuffer, uint32_t nBuffers)
 		: m_Pipeline(nullptr), m_PipelineLayout(nullptr), m_VkDevice(vkDevice)
 	{
 		std::vector<VkShaderModule> ShaderModules;
@@ -57,6 +58,30 @@ namespace FTMGui {
 		VertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
 		VertexInputInfo.vertexAttributeDescriptionCount = 0;
 		VertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
+
+		if (VertexBuffer)
+		{
+			m_BindingDesc.push_back({});
+			m_AttribDesc.push_back({});
+
+			auto& BindingDesc = m_BindingDesc.back();
+			auto& AttribDesc = m_AttribDesc.back();
+
+			for (size_t i = 0; i < nBuffers; i++)
+			{
+				BindingDesc.push_back(VertexBuffer[i].GetBindingDescription().value());
+
+				for(auto& Desc : VertexBuffer[i].GetInputDescription())
+					AttribDesc.push_back(Desc);
+			}
+			
+			VertexInputInfo.vertexBindingDescriptionCount = (uint32_t)BindingDesc.size();
+			VertexInputInfo.pVertexBindingDescriptions = BindingDesc.data();
+			
+			VertexInputInfo.vertexAttributeDescriptionCount = (uint32_t)AttribDesc.size();
+			VertexInputInfo.pVertexAttributeDescriptions = AttribDesc.data(); 
+
+		}
 
 		VkPipelineInputAssemblyStateCreateInfo InputAssembly{};
 		InputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

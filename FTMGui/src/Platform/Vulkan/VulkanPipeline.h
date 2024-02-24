@@ -3,6 +3,7 @@
 #include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
 #include "VulkanRenderPass.h"
+#include "VulkanBuffer.h"
 
 #include <filesystem>
 #include <unordered_map>
@@ -22,7 +23,8 @@ namespace FTMGui {
 		VulkanPipeline(const Ref<VulkanDevice>& vkDevice, 
 					   const VulkanSwapchain& Swapchain,
 					   const VulkanRenderPass& RenderPass,
-					   const std::unordered_map<ShaderType, std::filesystem::path>& ShaderPaths);
+					   const std::unordered_map<ShaderType, std::filesystem::path>& ShaderPaths, 
+					   VulkanBuffer* VertexBuffer = nullptr, uint32_t nBuffers = 1);
 
 		~VulkanPipeline();
 
@@ -38,6 +40,9 @@ namespace FTMGui {
 
 		Ref<VulkanDevice> m_VkDevice;
 		std::vector<VkPipelineShaderStageCreateInfo> m_PipelineStagesCreateInfos;
+
+		std::vector<std::vector<VkVertexInputBindingDescription>>  m_BindingDesc;
+		std::vector<std::vector<VkVertexInputAttributeDescription>> m_AttribDesc;
 
 	};
 }

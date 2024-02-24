@@ -9,7 +9,8 @@ namespace FTMGui {
 	{
 	public:
 		VulkanCommandBuffer(const Ref<VulkanDevice>& Device,
-							const VulkanPhysicalDevice& PhysicalDevice);
+							const VulkanPhysicalDevice& PhysicalDevice, 
+							CommandPoolFlags Flags = 0);
 
 		VulkanCommandBuffer(const VulkanCommandBuffer& Other) {};
 

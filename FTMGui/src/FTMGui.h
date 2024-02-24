@@ -13,6 +13,7 @@
 #include "Platform/Vulkan/VulkanFence.h"
 #include "Platform/Vulkan/VulkanSemaphore.h"
 #include "Platform/Vulkan/VulkanCommandBuffer.h"
+#include "Platform/Vulkan/VulkanBuffer.h"
 
 #include <memory>
 
@@ -59,6 +60,8 @@ namespace FTMGui {
 
 		Scope<VulkanRenderPass> m_RenderPass;
 		Scope<VulkanPipeline> m_RenderPipeline;
+
+		Scope<VulkanBuffer> m_VertexBuffer;
 
 		std::vector<VulkanCommandBuffer> m_CommandBuffers;
 

@@ -30,6 +30,7 @@ namespace FTMGui {
 	{
 	public:
 		VulkanPhysicalDevice(const VulkanInstance& instance, const VulkanSurface& surface);
+		VulkanPhysicalDevice() = default;
 		~VulkanPhysicalDevice();
 
 		inline const VkPhysicalDevice  Get() const { return m_PhysicalDevice; }

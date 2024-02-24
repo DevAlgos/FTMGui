@@ -269,6 +269,7 @@
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Utils\Log.cpp" />
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Utils\Logging.cpp" />
     <ClCompile Include="C:\Users\khali\OneDrive\Desktop\dev\FTMGui\FTMGui\src\Window\Window.cpp" />
+    <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanBuffer.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanCommandBuffer.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanCommandPool.cpp" />
     <ClCompile Include="FTMGui\src\Platform\Vulkan\VulkanDevice.cpp" />
@@ -288,6 +289,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanBase.h" />
+    <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanCommandBuffer.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanCommandPool.h" />
     <ClInclude Include="FTMGui\src\Platform\Vulkan\VulkanDevice.h" />

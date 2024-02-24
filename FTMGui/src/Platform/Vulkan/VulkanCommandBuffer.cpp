@@ -5,8 +5,9 @@
 namespace FTMGui {
 	
 	VulkanCommandBuffer::VulkanCommandBuffer(const Ref<VulkanDevice>& Device,
-											 const VulkanPhysicalDevice& PhysicalDevice)
-		: m_CommandBuffer(nullptr), m_CommandPool(MakeScope<VulkanCommandPool>(Device, PhysicalDevice)), m_VkDevice(Device)
+											 const VulkanPhysicalDevice& PhysicalDevice,
+											 CommandPoolFlags Flags)
+		: m_CommandBuffer(nullptr), m_CommandPool(MakeScope<VulkanCommandPool>(Device, PhysicalDevice, Flags)), m_VkDevice(Device)
 	{
 		VkCommandBufferAllocateInfo AllocateInfo{};
 		AllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
